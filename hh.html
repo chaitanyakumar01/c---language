@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Voting System</title>
+    <style>
+        :root {
+            --primary-color: #4e44ce;
+            --secondary-color: #35aee2;
+            --dark-color: #1a1a2e;
+            --light-color: #f1f1f1;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        .wallet-connect {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .wallet-connect:hover {
+            background-color: #3a34a0;
+        }
+        
+        .wallet-connected {
+            background-color: var(--success-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .wallet-address {
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        
+        main {
+            padding: 40px 0;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        
+        .nav-links {
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-bottom: 10px;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 10px;
+            color: var(--dark-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .content-header h2 {
+            color: var(--primary-color);
+        }
+        
+        .create-poll-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .create-poll-btn:hover {
+            background-color: #3a34a0;
+        }
+        
+        .polls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .poll-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .poll-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .poll-card h3 {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .poll-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .poll-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+        
+        .vote-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .vote-btn:hover {
+            background-color: #3a34a0;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary-color);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .option-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .option-input input {
+            flex: 1;
+        }
+        
+        .remove-option {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            width: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .add-option {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: #3a34a0;
+        }
+        
+        .poll-details {
+            margin-bottom: 30px;
+        }
+        
+        .poll-details h2 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .poll-details p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .options-list {
+            margin-bottom: 30px;
+        }
+        
+        .option-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+        
+        .option-item:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .option-item.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .option-item .progress-bar {
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .option-item .progress {
+            height: 100%;
+            background-color: var(--secondary-color);
+        }
+        
+        .back-btn {
+            background-color: #ddd;
+            color: var(--dark-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-ended {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .polls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">Decentral<span>Vote</span></a>
+                <button id="connectWallet" class="wallet-connect">Connect Wallet</button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="hero">
+                <h1>Decentralized Voting System</h1>
+                <p>A secure, transparent, and tamper-proof voting platform powered by blockchain technology. Cast your votes with confidence knowing they're recorded immutably on the blockchain.</p>
+            </div>
+            
+            <div class="dashboard">
+                <div class="sidebar">
+                    <h2>Menu</h2>
+                    <ul class="nav-links">
+                        <li><a href="#" class="active">All Polls</a></li>
+                        <li><a href="#">Active Polls</a></li>
+                        <li><a href="#">Ended Polls</a></li>
+                        <li><a href="#">My Votes</a></li>
+                        <li><a href="#">Create Poll</a></li>
+                    </ul>
+                </div>
+                
+                <div class="content">
+                    <div class="content-header">
+                        <h2>All Polls</h2>
+                        <button id="createPollBtn" class="create-poll-btn">+ Create New Poll</button>
+                    </div>
+                    
+                    <div class="polls-grid" id="pollsContainer">
+                        <!-- Poll cards will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Create Poll Modal -->
+    <div class="modal" id="createPollModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Poll</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="pollForm">
+                <div class="form-group">
+                    <label for="pollTitle">Poll Title</label>
+                    <input type="text" id="pollTitle" placeholder="Enter poll title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pollDescription">Description</label>
+                    <textarea id="pollDescription" placeholder="Describe your poll..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Options</label>
+                    <div id="optionsContainer">
+                        <div class="option-input">
+                            <input type="text" placeholder="Option 1" required>
+                            <button type="button" class="remove-option">&times;</button>
+                        </div>
+                        <div class="option-input">
+                            <input type="text" placeholder="Option 2" required>
+                            <button type="button" class="remove-option">&times;</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-option" id="addOption">+ Add Option</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input type="datetime-local" id="endDate" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Create Poll</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Vote Modal -->
+    <div class="modal" id="voteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="voteModalTitle">Cast Your Vote</h2>
+                <button class="close-btn" id="closeVoteModal">&times;</button>
+            </div>
+            <div class="poll-details">
+                <h2 id="votePollTitle">Sample Poll Title</h2>
+                <p id="votePollDescription">This is a sample poll description that explains what the poll is about.</p>
+                <div class="poll-meta">
+                    <span>Created by: <span id="pollCreator">0x123...456</span></span>
+                    <span class="status-badge status-active">Active</span>
+                </div>
+            </div>
+            
+            <div class="options-list" id="voteOptions">
+                <!-- Options will be dynamically inserted here -->
+            </div>
+            
+            <button id="submitVoteBtn" class="submit-btn">Submit Vote</button>
+        </div>
+    </div>
+    
+    <script>
+        // Sample data - in a real app, this would come from your blockchain contract
+        const samplePolls = [
+            {
+                id: 1,
+                title: "Community DAO Proposal Vote",
+                description: "Vote on the proposed changes to the community DAO structure and funding allocation.",
+                creator: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                options: ["Approve Proposal", "Reject Proposal", "Abstain"],
+                votes: [125, 42, 18],
+                endDate: "2023-12-31T23:59",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Favorite Blockchain Platform",
+                description: "Which blockchain platform do you prefer for dApp development?",
+                creator: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                options: ["Ethereum", "Polygon", "Solana", "Avalanche", "Other"],
+                votes: [89, 76, 54, 32, 12],
+                endDate: "2023-11-15T23:59",
+                isActive: false
+            },
+            {
+                id: 3,
+                title: "Next Feature Implementation",
+                description: "Vote on which feature should be implemented next in our dApp.",
+                creator: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+                options: ["NFT Integration", "DAO Governance", "Cross-chain Support", "Mobile App"],
+                votes: [210, 178, 145, 92],
+                endDate: "2023-12-15T23:59",
+                isActive: true
+            }
+        ];
+        
+        // DOM Elements
+        const connectWalletBtn = document.getElementById('connectWallet');
+        const createPollBtn = document.getElementById('createPollBtn');
+        const pollsContainer = document.getElementById('pollsContainer');
+        const createPollModal = document.getElementById('createPollModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeVoteModal = document.getElementById('closeVoteModal');
+        const pollForm = document.getElementById('pollForm');
+        const addOptionBtn = document.getElementById('addOption');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const voteModal = document.getElementById('voteModal');
+        const voteOptions = document.getElementById('voteOptions');
+        const submitVoteBtn = document.getElementById('submitVoteBtn');
+        const voteModalTitle = document.getElementById('voteModalTitle');
+        const votePollTitle = document.getElementById('votePollTitle');
+        const votePollDescription = document.getElementById('votePollDescription');
+        
+        // State
+        let walletConnected = false;
+        let currentPollId = null;
+        let selectedOption = null;
+        
+        // Initialize the app
+        function init() {
+            renderPolls();
+            setupEventListeners();
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            connectWalletBtn.addEventListener('click', toggleWalletConnection);
+            createPollBtn.addEventListener('click', () => createPollModal.style.display = 'flex');
+            closeModal.addEventListener('click', () => createPollModal.style.display = 'none');
+            closeVoteModal.addEventListener('click', () => voteModal.style.display = 'none');
+            addOptionBtn.addEventListener('click', addOptionField);
+            pollForm.addEventListener('submit', handleCreatePoll);
+            submitVoteBtn.addEventListener('click', handleVoteSubmit);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === createPollModal) createPollModal.style.display = 'none';
+                if (e.target === voteModal) voteModal.style.display = 'none';
+            });
+        }
+        
+        // Toggle wallet connection
+        function toggleWalletConnection() {
+            // In a real app, this would connect to MetaMask or another wallet provider
+            walletConnected = !walletConnected;
+            
+            if (walletConnected) {
+                // Simulate wallet connection
+                const shortAddress = '0x742d...f44e';
+                connectWalletBtn.textContent = 'Connected';
+                connectWalletBtn.classList.add('wallet-connected');
+                
+                const addressSpan = document.createElement('span');
+                addressSpan.className = 'wallet-address';
+                addressSpan.textContent = shortAddress;
+                
+                connectWalletBtn.innerHTML = '';
+                connectWalletBtn.appendChild(document.createTextNode('Connected '));
+                connectWalletBtn.appendChild(addressSpan);
+            } else {
+                connectWalletBtn.textContent = 'Connect Wallet';
+                connectWalletBtn.className = 'wallet-connect';
+            }
+        }
+        
+        // Render polls to the UI
+        function renderPolls() {
+            pollsContainer.innerHTML = '';
+            
+            samplePolls.forEach(poll => {
+                const pollCard = document.createElement('div');
+                pollCard.className = 'poll-card';
+                
+                const totalVotes = poll.votes.reduce((sum, votes) => sum + votes, 0);
+                
+                pollCard.innerHTML = `
+                    <h3>${poll.title}</h3>
+                    <p>${poll.description}</p>
+                    <div class="poll-meta">
+                        <span>${totalVotes} votes</span>
+                        <span class="status-badge ${poll.isActive ? 'status-active' : 'status-ended'}">
+                            ${poll.isActive ? 'Active' : 'Ended'}
+                        </span>
+                    </div>
+                    <button class="vote-btn" data-id="${poll.id}">${poll.isActive ? 'Vote Now' : 'View Results'}</button>
+                `;
+                
+                pollsContainer.appendChild(pollCard);
+            });
+            
+            // Add event listeners to vote buttons
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const pollId = parseInt(e.target.getAttribute('data-id'));
+                    openVoteModal(pollId);
+                });
+            });
+        }
+        
+        // Open vote modal
+        function openVoteModal(pollId) {
+            currentPollId = pollId;
+            const poll = samplePolls.find(p => p.id === pollId);
+            
+            if (!poll) return;
+            
+            voteModalTitle.textContent = poll.isActive ? 'Cast Your Vote' : 'Poll Results';
+            votePollTitle.textContent = poll.title;
+            votePollDescription.textContent = poll.description;
+            document.getElementById('pollCreator').textContent = `${poll.creator.substring(0, 6)}...${poll.creator.substring(poll.creator.length - 4)}`;
+            
+            // Clear previous options
+            voteOptions.innerHTML = '';
+            
+            const totalVotes = poll.votes.reduce((sum, votes) => sum + votes, 0);
+            
+            poll.options.forEach((option, index) => {
+                const votes = poll.votes[index];
+                const percentage = totalVotes > 0 ? (votes / totalVotes * 100).toFixed(1) : 0;
+                
+                const optionItem = document.createElement('div');
+                optionItem.className = 'option-item';
+                if (!poll.isActive) optionItem.classList.add('selected');
+                
+                optionItem.innerHTML = `
+                    <div class="option-text">${option}</div>
+                    ${poll.isActive ? '' : `
+                        <div class="vote-count">${votes} votes (${percentage}%)</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${percentage}%"></div>
+                        </div>
+                    `}
+                `;
+                
+                if (poll.isActive) {
+                    optionItem.addEventListener('click', () => {
+                        document.querySelectorAll('.option-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        optionItem.classList.add('selected');
+                        selectedOption = index;
+                    });
+                }
+                
+                voteOptions.appendChild(optionItem);
+            });
+            
+            submitVoteBtn.style.display = poll.isActive ? 'block' : 'none';
+            voteModal.style.display = 'flex';
+        }
+        
+        // Handle vote submission
+        function handleVoteSubmit() {
+            if (selectedOption === null) {
+                alert('Please select an option to vote');
+                return;
+            }
+            
+            // In a real app, this would interact with your smart contract
+            alert(`Vote submitted for option ${selectedOption + 1} in poll ${currentPollId}`);
+            
+            // Simulate vote being recorded
+            const pollIndex = samplePolls.findIndex(p => p.id === currentPollId);
+            if (pollIndex !== -1) {
+                samplePolls[pollIndex].votes[selectedOption]++;
+            }
+            
+            voteModal.style.display = 'none';
+            renderPolls();
+            selectedOption = null;
+        }
+        
+        // Add option field to poll creation form
+        function addOptionField() {
+            const optionCount = optionsContainer.children.length + 1;
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-input';
+            
+            optionDiv.innerHTML = `
+                <input type="text" placeholder="Option ${optionCount}" required>
+                <button type="button" class="remove-option">&times;</button>
+            `;
+            
+            optionsContainer.appendChild(optionDiv);
+            
+            // Add event listener to remove button
+            optionDiv.querySelector('.remove-option').addEventListener('click', () => {
+                if (optionsContainer.children.length > 2) {
+                    optionDiv.remove();
+                } else {
+                    alert('A poll must have at least 2 options');
+                }
+            });
+        }
+        
+        // Handle poll creation form submission
+        function handleCreatePoll(e) {
+            e.preventDefault();
+            
+            if (!walletConnected) {
+                alert('Please connect your wallet to create a poll');
+                return;
+            }
+            
+            const title = document.getElementById('pollTitle').value;
+            const description = document.getElementById('pollDescription').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            const options = [];
+            document.querySelectorAll('#optionsContainer input').forEach(input => {
+                options.push(input.value);
+            });
+            
+            // In a real app, this would deploy a new voting contract or create a poll in your existing contract
+            const newPoll = {
+                id: samplePolls.length + 1,
+                title,
+                description,
+                creator: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // Would be the connected wallet address
+                options,
+                votes: new Array(options.length).fill(0),
+                endDate,
+                isActive: true
+            };
+            
+            samplePolls.push(newPoll);
+            renderPolls();
+            
+            // Reset form
+            pollForm.reset();
+            optionsContainer.innerHTML = `
+                <div class="option-input">
+                    <input type="text" placeholder="Option 1" required>
+                    <button type="button" class="remove-option">&times;</button>
+                </div>
+                <div class="option-input">
+                    <input type="text" placeholder="Option 2" required>
+                    <button type="button" class="remove-option">&times;</button>
+                </div>
+            `;
+            
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (optionsContainer.children.length > 2) {
+                        e.target.parentElement.remove();
+                    } else {
+                        alert('A poll must have at least 2 options');
+                    }
+                });
+            });
+            
+            createPollModal.style.display = 'none';
+            alert('Poll created successfully!');
+        }
+        
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>

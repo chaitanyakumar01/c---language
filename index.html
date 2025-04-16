@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DecentralVote | Secure Voting</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-content">
+          <div class="logo">
+            <i class="fas fa-vote-yea"></i>
+            <h1>Decentral<span>Vote</span></h1>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="wallet-btn">
+              <i class="fas fa-wallet"></i>
+              <span>Connect Wallet</span>
+            </button>
+
+            <!-- ✅ About Button -->
+            <button class="about-btn">
+              <i class="fas fa-info-circle"></i>
+              <span>About</span>
+            </button>
+
+            <!-- Logout Button -->
+            <a href="logout.html" class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Log Out</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Section -->
+      <main class="app-main">
+        <section class="hero-section">
+          <div class="hero-text">
+            <h2>Decentralized Voting Platform</h2>
+            <p>Secure, transparent and tamper-proof voting powered by blockchain</p>
+            <button class="primary-btn">
+              <i class="fas fa-plus-circle"></i>
+              Create New Poll
+            </button>
+          </div>
+        </section>
+
+        <section class="polls-section">
+          <div class="section-header">
+            <h3><i class="fas fa-poll"></i> Active Polls</h3>
+            <div class="filter-options">
+              <button class="filter-btn active">All</button>
+              <button class="filter-btn">Ongoing</button>
+              <button class="filter-btn">Ended</button>
+            </div>
+          </div>
+
+          <div class="polls-grid">
+            <!-- Poll 1 -->
+            <div class="poll-card">
+              <div class="poll-header">
+                <h3 class="poll-title">DAO Treasury Allocation</h3>
+                <p class="poll-desc">Vote on Q3 fund distribution</p>
+              </div>
+              <div class="poll-footer">
+                <span class="poll-status active">
+                  <i class="fas fa-circle"></i> Active • Ends 15 Dec
+                </span>
+                <button class="vote-btn" onclick="castVote(this)">
+                  <i class="fas fa-vote-yea"></i> Vote Now
+                </button>
+              </div>
+            </div>
+
+            <!-- Poll 2 -->
+            <div class="poll-card">
+              <div class="poll-header">
+                <h3 class="poll-title">Protocol Upgrade</h3>
+                <p class="poll-desc">Security improvements voting</p>
+              </div>
+              <div class="poll-footer">
+                <span class="poll-status active">
+                  <i class="fas fa-circle"></i> Active • Ends 30 Nov
+                </span>
+                <button class="vote-btn" onclick="castVote(this)">
+                  <i class="fas fa-vote-yea"></i> Vote Now
+                </button>
+              </div>
+            </div>
+
+            <!-- Poll 3 -->
+            <div class="poll-card">
+              <div class="poll-header">
+                <h3 class="poll-title">Community Awards</h3>
+                <p class="poll-desc">Best contributor of the month</p>
+              </div>
+              <div class="poll-footer">
+                <span class="poll-status ended">
+                  <i class="fas fa-check-circle"></i> Ended • 25 Oct
+                </span>
+                <button class="results-btn">
+                  <i class="fas fa-chart-bar"></i> View Results
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ✅ About Modal -->
+  <div class="modal-overlay" id="aboutModal">
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <h2>Our Team</h2>
+      <div class="team-cards">
+        <div class="team-card">
+          <div class="member-photo"><i class="fas fa-user"></i></div>
+          <h3>Chaitanya Kumar</h3>
+          <p><strong>Reg No:</strong> RA2411003030267</p>
+          <p><strong>Class:</strong> CSE Core-E</p>
+          <p><strong>Email:</strong> ck6524@srmist.edu.in</p>
+        </div>
+        <div class="team-card">
+          <div class="member-photo"><i class="fas fa-user"></i></div>
+          <h3>Aayush</h3>
+          <p><strong>Reg No:</strong> 102</p>
+          <p><strong>Class:</strong> CS-5</p>
+          <p><strong>Email:</strong> ad5909@srmist.edu.in</p>
+        </div>
+        <div class="team-card">
+          <div class="member-photo"><i class="fas fa-user"></i></div>
+          <h3>Aditya Maheswari</h3>
+          <p><strong>Reg No:</strong> RA2411003030474</p>
+          <p><strong>Class:</strong> CSE Core-E</p>
+          <p><strong>Email:</strong> am6524@srmist.edu.in</p>
+        </div>
+        <div class="team-card">
+          <div class="member-photo"><i class="fas fa-user"></i></div>
+          <h3>Pranjal Garg</h3>
+          <p><strong>Reg No:</strong> RA2411003030267</p>
+          <p><strong>Class:</strong> CSE Core-E</p>
+          <p><strong>Email:</strong> pg6524@srmist.edu.in</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ JS for Modal + Voting -->
+  <script>
+    const aboutBtn = document.querySelector('.about-btn');
+    const aboutModal = document.getElementById('aboutModal');
+    const closeModal = document.querySelector('.close-modal');
+
+    aboutBtn.addEventListener('click', () => {
+      aboutModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+      aboutModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === aboutModal) {
+        aboutModal.style.display = 'none';
+      }
+    });
+
+    function castVote(btn) {
+      if (btn.classList.contains("voted")) {
+        alert("You have already voted!");
+        return;
+      }
+
+      const pollCard = btn.closest(".poll-card");
+      const voteButtons = pollCard.querySelectorAll(".vote-btn");
+
+      voteButtons.forEach(button => {
+        button.classList.add("voted");
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-check"></i> Voted';
+      });
+
+      const pollTitle = pollCard.querySelector(".poll-title").innerText;
+      localStorage.setItem(pollTitle, "voted");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".poll-card").forEach(card => {
+        const title = card.querySelector(".poll-title").innerText;
+        if (localStorage.getItem(title) === "voted") {
+          const btn = card.querySelector(".vote-btn");
+          if (btn) {
+            btn.classList.add("voted");
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-check"></i> Voted';
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
